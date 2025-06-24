@@ -1,0 +1,35 @@
+import personajes.*
+
+describe "pruebas personajes" {
+  //Planetas
+  const tatooine = new Planeta (poblacion= 1000000)
+  const coruscant = new Planeta (poblacion= 550000)
+
+  //Princesa Leia
+  const princesaLeia = new LiderDeLaRebelion(escuadron=[arturito, chewbacca])
+
+  method initialize() {
+    tatooine.agregarDefensores([arturito, hanSolo])
+    coruscant.agregarDefensores([princesaLeia, hanSolo])
+    blasterModular.agregarPartes([bateriaExtendida, silenciador, lenteDeEnfoqueDePlasma])
+  }
+
+  test "La potencia de arturito es 500, y la de han solo es de 0 porque esta congelado, asi si, sufre una invasion de 1000, pierde poblacion hasta 900000" {
+    tatooine.sufrirInvasion(1000)
+    assert.equals(900000, tatooine.poblacion())
+  }
+
+  test "La potencia de arturito es 1000, y la de han solo es de 140 ya que no esta congelado, asi si, sufre una invasion de 1000, no pierde poblacion" {
+    hanSolo.descongelarse()
+    arturito.cargarBateria()
+    tatooine.sufrirInvasion(1000)
+    assert.equals(1000000, tatooine.poblacion())
+  }
+
+  test "La potencia de leia es de 350, y la de han solo es de 180  asi si, sufre una invasion de 500, no pierde poblacion" {
+    hanSolo.descongelarse()
+    hanSolo.cambiarArma(blasterModular)
+    coruscant.sufrirInvasion(500)
+    assert.equals(550000, coruscant.poblacion())
+  }
+}
