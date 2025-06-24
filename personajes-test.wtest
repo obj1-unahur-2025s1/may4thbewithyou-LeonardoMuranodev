@@ -33,3 +33,80 @@ describe "pruebas personajes" {
     assert.equals(550000, coruscant.poblacion())
   }
 }
+
+describe "pruebas de maestros" {
+  //Planetas
+  const tatooine = new Planeta (poblacion= 1000000)
+  const coruscant = new Planeta (poblacion= 550000)
+
+  //sable
+  const sable = new SableDeLuz (energia = 100)
+
+  //maestros
+  const anakin = new Maestro(midiclorianos = 1000000, sableDeLuz = sable)
+  const obiWan = new Maestro(midiclorianos = 500000, sableDeLuz = sable)
+
+  //sucesos
+  const amigoNuevo = new SucesoGanarAmigo(amigo = arturito)
+  const pelearBatalla = new SucesoPelearBatalla(cantBajas = 10)
+  const ganarCarrera = new Suceso(cargaEmocional = 5)
+  const perderSerAmado = new Suceso(cargaEmocional = -100)
+  const redencion = new Suceso(cargaEmocional = 1000)
+  const sucesion1 = new CadenaDeSucesos(sucesos=[amigoNuevo, pelearBatalla, ganarCarrera])
+
+  //Princesa Leia
+  const princesaLeia = new LiderDeLaRebelion(escuadron=[arturito, chewbacca])
+
+  method initialize() {
+    tatooine.agregarDefensores([arturito, hanSolo, obiWan])
+    coruscant.agregarDefensores([princesaLeia, hanSolo])
+    blasterModular.agregarPartes([bateriaExtendida, silenciador, lenteDeEnfoqueDePlasma])
+
+  }
+
+  test "La potencia de arturito es 500, y la de han solo es de 0 porque esta congelado,y se une obi wan con potencia de 6000, por lo que tatoine no sufre una invasion de 5000" {
+    tatooine.sufrirInvasion(1000)
+    assert.equals(1000000, tatooine.poblacion())
+  }
+
+  test "obi wan trascurre sucesos que no afectan a su bando, su esperanza final es" {
+    obiWan.vivirSuceso(sucesion1)
+    assert.that(obiWan.esJedi())
+  }
+
+  test "Anakin pierde a un ser amado y cambia de bando" {
+    anakin.vivirSuceso(perderSerAmado)
+    assert.notThat(anakin.esJedi())
+    assert.equals(1, ladoOscuro.fuerzaLadoOscuro())
+  }
+
+  test "Anakin pierde a un ser amado y pero se redime" {
+    anakin.vivirSuceso(perderSerAmado)
+    anakin.vivirSuceso(redencion)
+    assert.that(anakin.esJedi())
+    assert.equals(0.5, ladoOscuro.fuerzaLadoOscuro())
+  }
+}
+
+describe "pelicula" {
+  //sable
+  const sable = new SableDeLuz (energia = 100)
+
+  const anakin = new Maestro(midiclorianos = 1000000, sableDeLuz = sable)
+
+  const anakinEsRespetado = new Suceso (cargaEmocional = 50)
+  const padmeEstaEmbarazada = new Suceso(cargaEmocional = -10)
+  const palpatineLeDiceSobreElLadoOscuro = new Suceso(cargaEmocional = -20)
+  const anakinSeUneAPalpatine = new Suceso(cargaEmocional = -100)
+  const vaderAtacaAlTemploJedi = new Suceso(cargaEmocional = -100)
+  const obiWanDerrotaAAnakin = new Suceso(cargaEmocional = -20)
+  const palpatineRescataAAnakin = new Suceso(cargaEmocional = -50)
+  const muerePadme = new Suceso(cargaEmocional = -100)
+
+  const laVenganzaDeLosSith = new CadenaDeSucesos(sucesos = [anakinEsRespetado, padmeEstaEmbarazada, palpatineLeDiceSobreElLadoOscuro, anakinSeUneAPalpatine, vaderAtacaAlTemploJedi, obiWanDerrotaAAnakin, palpatineRescataAAnakin, muerePadme])
+
+  test "Al transcurrir episodio 3: la venganza de los SITH, anakin es del lado oscuro" {
+    anakin.vivirSuceso(laVenganzaDeLosSith)
+    assert.notThat(anakin.esJedi())
+  }
+}

@@ -1,3 +1,96 @@
+class Maestro {
+  const property midiclorianos
+  const property sableDeLuz
+  var esperanza = 50
+  var bando = ladoLuminoso
+
+  //Metodos de consulta
+  method esJedi() = esperanza > 0
+  method potencia() = bando.potencia(self)
+
+  //Metodos de indicacion
+  method vivirSuceso(unSuceso) {
+    bando.vivirSuceso(self, unSuceso)
+  }
+
+  method cambiarEsperanza(unValor) {
+    esperanza = esperanza + unValor
+  }
+
+  method cambiarBando(unBando) {
+    bando = unBando
+  }
+}
+
+object ladoLuminoso {
+  method potencia(unMaestro) = (unMaestro.midiclorianos() * 0.001 + unMaestro.sableDeLuz().energia()) * 10
+
+  method vivirSuceso(unMaestro, unSuceso) {
+    unMaestro.cambiarEsperanza(unSuceso.cargaEmocional()) 
+    if (not unMaestro.esJedi()) {
+      unMaestro.cambiarBando(ladoOscuro)
+      ladoOscuro.aumentarFuerza()
+    }
+  }
+}
+
+object ladoOscuro {
+  var fuerzaBando = 0
+
+  //Metodos de consulta
+  method potencia(unMaestro) = (unMaestro.midiclorianos() * 0.001 + unMaestro.sableDeLuz().enegia()) * fuerzaBando
+  method fuerzaLadoOscuro() = fuerzaBando
+
+  //Metodos de indicacion
+  method vivirSuceso(unMaestro, unSuceso) {
+    if (unSuceso.cargaEmocional() > 100) {
+      unMaestro.cambiarEsperanza(unSuceso.cargaEmocional()) 
+      unMaestro.cambiarBando(ladoLuminoso)
+      self.disminuirFuerza()
+    }
+  }
+
+  method aumentarFuerza() {
+    fuerzaBando += 1
+  }
+  method disminuirFuerza() {
+    fuerzaBando *= 0.5
+  }
+}
+
+class CadenaDeSucesos {
+  const sucesos = []
+  method cargaEmocional() = sucesos.sum({s => s.cargaEmocional()})
+
+  method agregarSuceso(unSuceso) {
+    sucesos.addAll(unSuceso)
+  }
+
+  method quitarSuceso(unSuceso) {
+    sucesos.remove(unSuceso)
+  }
+}
+
+class Suceso {
+  const property cargaEmocional
+}
+
+class SucesoGanarAmigo {
+  const amigo
+
+  method cargaEmocional() = amigo.potencia()
+}
+
+class SucesoPelearBatalla {
+  const cantBajas
+
+  method cargaEmocional() = cantBajas * -1
+}
+
+class SableDeLuz {
+  const property energia
+}
+
 class Planeta {
   var poblacion
   const defensores = []
